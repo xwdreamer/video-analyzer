@@ -1,5 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
+# https://huggingface.co/spaces/senior-sigan/nijigenka/commit/a2090aa313dd98a420fdcaa036af05b8851b2498
 
 from datetime import datetime
 import io
@@ -19,7 +20,11 @@ class YoloV3Model:
     def __init__(self):
         model_path = 'yolov3.onnx'
         
-        self._session = onnxruntime.InferenceSession(model_path)
+        # self._session = onnxruntime.InferenceSession(model_path)
+        opts = onnxruntime.SessionOptions()
+        opts.intra_op_num_threads = 8
+        self._session = onnxruntime.InferenceSession(model_path, sess_options=opts)
+        
         tags_file = 'tags.txt'
         with open(tags_file) as f:
             self.tags = [line.strip() for line in f.readlines()]
